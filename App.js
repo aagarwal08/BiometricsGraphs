@@ -7,7 +7,8 @@
  */
 
 import React, {Component} from 'react';
-import {SafeAreaView, StyleSheet, View, Text} from 'react-native';
+import {SafeAreaView, StyleSheet, View, Text, Button} from 'react-native';
+import {ButtonGroup} from 'react-native-elements';
 import {
   VictoryBar,
   VictoryChart,
@@ -19,16 +20,31 @@ import {
   VictoryZoomContainer,
   VictoryCandlestick,
 } from 'victory-native';
-
-const data = [
-  {quarter: 1, earnings: 13000},
-  {quarter: 2, earnings: 16500},
-  {quarter: 3, earnings: 14250},
-  {quarter: 4, earnings: 19000},
-];
+import Weight from './weight';
+import BloodPressure from './bloodPressure';
 
 export default class login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      selectedIndex: 0,
+    };
+    this.updateIndex = this.updateIndex.bind(this);
+  }
+
+  updateIndex(selectedIndex) {
+    this.setState({selectedIndex});
+    console.log("INDEX", selectedIndex);
+  }
+
+  componentDidMount() {
+    const buttons = ['Hello', 'World', 'Buttons'];
+  }
+
   render() {
+    
+    const {selectedIndex} = this.state;
+
     function getTimeStamp(date, time) {
       var timeStamp = new Date(
         Date.UTC(
@@ -55,9 +71,9 @@ export default class login extends Component {
         const [curTime, curTimeData] = entry;
         Object.entries(curTimeData).forEach((entry) => {
           const [bioType, bioData] = entry;
-          console.log('DATE, TIME, DATA', curDate, curTime, bioType);
+          //console.log('DATE, TIME, DATA', curDate, curTime, bioType);
           var timeStamp = getTimeStamp(curDate, curTime);
-          console.log('PREV vs CURR DATE', prevDate, curDate);
+          //console.log('PREV vs CURR DATE', prevDate, curDate);
           if (prevDate != curDate) {
             switch (bioType) {
               case 'Weight':
@@ -91,7 +107,7 @@ export default class login extends Component {
             var weightSize = weightData.length - 1;
             var bsSize = bsData.length - 1;
             var bpSize = sysData.length - 1;
-            console.log('.MIN', weightData[0]);
+            //console.log('.MIN', weightData[0]);
             switch (bioType) {
               case 'Weight':
                 if (
@@ -166,121 +182,39 @@ export default class login extends Component {
       });
     });
 
-    // Object.entries(biometricData).forEach(entry => {
-    //   const [curDate, curDateData] = entry;
-    //   Object.entries(curDateData).forEach(entry => {
-    //     const [curTime, curTimeData] = entry;
-    //     Object.entries(curTimeData).forEach(entry => {
-    //       const [bioType, bioData] = entry;
-    //       var timeStamp = getTimeStamp(curDate, curTime);
-    //       switch(bioType) {
-    //         case 'Weight':
-    //           weightData.push({x: timeStamp, y: Number(bioData['biometric_values']['Weight(lbs)'])});
-    //           break;
-    //         case 'Blood Sugar':
-    //           bsData.push({x: timeStamp, y: Number(bioData['biometric_values']['Post Meal'])});
-    //           break;
-    //         case 'Blood Pressure':
-    //           sysData.push({x: timeStamp, y: Number(bioData['biometric_values']['Systolic'])});
-    //           diaData.push({x: timeStamp, y: Number(bioData['biometric_values']['Diastolic'])});
-    //           break;
-    //       }
-    //     });
-    //   });
-    // });
+    var diaButtons = [];
 
-    //FOR EACH
-    // biometricData.forEach((curDateData, curDate) => {
-    //   curDateData.forEach((curTimeData, curTime) => {
-    //     curTimeData.forEach((bioData, bioType) => {
-    //       var timeStamp = curDate + curTime;
-    //         switch(bioType) {
-    //           case 'Weight':
-    //             weightData.push({x: timeStamp, y: bioData['biometric_values']['Weight(lbs)']});
-    //             break;
-    //           case 'Blood Sugar':
-    //             bsData.push({x: timeStamp, y: bioData['biometric_values']['Post Meal']});
-    //             break;
-    //           case 'Blood Pressure':
-    //             sysData.push({x: timeStamp, y: bioData['biometric_values']['Systolic']});
-    //             diaData.push({x: timeStamp, y: bioData['biometric_values']['Diastolic']});
-    //             break;
-    //         }
-    //     });
-    //   });
-    // });
+    Object.entries(BioMetricArray).forEach((entry) => {
+      const [curBio, curBioData] = entry;
+      diaButtons.push(curBioData.biometric_type);
+      //console.log("BUTTONS", diaButtons);
+    });
 
-    // console.log("WEIGHT", weightData);
-    // console.log("BP", bsData);
-    // console.log("SYS", sysData);
-    // console.log("DIA", diaData);
+    selectedTab = () => {
+      switch(diaButtons[this.state.selectedIndex]){
+          case 'Blood Pressure':
+              return <Weight/>
+          case 'Blood Sugar':
+              return <BloodPressure />
+          case 'Weight':
+              return <ComponentC />
+          default:
+              return /* empty div maybe */
+      }
+    }
 
-    //MAP
-    // let objKeysX = Object.keys(biometricData);
-
-    // let weightsY = Object.keys(biometricData).map((k) =>
-    //   Object.keys(biometricData[k]).map(
-    //     (x) => biometricData[k][x]['Weight']['biometric_values']['Weight(lbs)'],
-    //   ),
-    // );
-
-    // console.log("BIOMETRIC KEYS LENGTH", objKeysX.length);
-
-    // let sysBP = Object.keys(biometricData).map((currDate) =>
-    //   Object.keys(biometricData[currDate]).map(
-    //     (currTime) =>
-    //       biometricData[currDate][currTime]['Blood Pressure'][
-    //         'biometric_values'
-    //       ]['Systolic'],
-    //   ),
-    // );
-    // console.log('SYSTOLIC', sysBP);
-
-    // let diaBP = Object.keys(biometricData).map((k) =>
-    //   Object.keys(biometricData[k]).map(
-    //     (x) =>
-    //       biometricData[k][x]['Blood Pressure']['biometric_values'][
-    //         'Diastolic'
-    //       ],
-    //   ),
-    // );
-
-    // let monthNames = [
-    //   'Jan',
-    //   'Feb',
-    //   'Mar',
-    //   'Apr',
-    //   'May',
-    //   'Jun',
-    //   'Jul',
-    //   'Aug',
-    //   'Sep',
-    //   'Oct',
-    //   'Nov',
-    //   'Dec',
-    // ];
-
-    // let dates = objKeysX.map((x) => x.slice(6));
-    // let years = objKeysX.map((x) => x.slice(0, 4));
-    // console.log('YEARS', years);
-    // console.log('DATES', dates[0]);
-    // let months = objKeysX
-    //   .map((x) => x.slice(4, 6))
-    //   .map((y) => y.replace('0', ''))
-    //   .map((z) => monthNames[z - 1]);
-    // for (let i = 0; i < dates.length; i++) {
-    //   months[i] = months[i] + ' ' + dates[i] + ' ' + years[i];
-    // }
-    // console.log('MONTHS', months);
-
-    // for (let i = 0; i < 9; i++) {
-    //   weightData.push({x: objKeysX[i], y: weightsY[i]});
-    //   sysData.push({x: months[i], y: sysBP[i]});
-    //   diaData.push({x: months[i], y: diaBP[i]});
-    // }
 
     return (
       <View style={styles.container}>
+       
+
+        <ButtonGroup
+          onPress={this.updateIndex}
+          selectedIndex={selectedIndex}
+          buttons={diaButtons}
+          containerStyle={{height: 40}}
+        />
+
         <Text>Weight vs Date</Text>
         <VictoryChart
           theme={VictoryTheme.material}
@@ -383,14 +317,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5fcff',
-    paddingLeft: 35,
-    paddingRight: 0,
   },
 });
 
 const BioMetricArray = [
   {
-    biometric_type: 'BloodPressure',
+    biometric_type: 'Blood Pressure',
 
     biometric_values: {
       type: 'TEXTBOX',
