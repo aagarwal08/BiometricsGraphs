@@ -13,7 +13,7 @@ import {
   VictoryCandlestick,
 } from 'victory-native';
 
-export default class BloodPressure extends Component {
+export default class BloodSugar extends Component {
     render() {
       function getTimeStamp(date, time) {
         var timeStamp = new Date(
@@ -153,77 +153,25 @@ export default class BloodPressure extends Component {
       });
         return(
             <View>
-                {/* <Text>Blood Pressure vs Date</Text> */}
+                {/* <Text>Blood Sugar vs Date</Text> */}
         <VictoryChart
           theme={VictoryTheme.material}
-          scale={{x: 'time'}}
           width={800}
           domainPadding={{ x: 25 }}
-          style={(paddingLeft = 150)}
-          containerComponent={
-            <VictoryVoronoiContainer
-              labels={({datum}) =>
-                `${Math.round(datum.low, 2)}, ${Math.round(datum.high, 2)}`
-              }
-            />
-          }>
-          <VictoryZoomContainer allowZoom={true} zoomDomain={{x: [0, 100]}} />
-          <VictoryLegend
-            x={120}
-            y={40}
-            title="Legend"
-            centerTitle
-            orientation="horizontal"
-            gutter={20}
-            style={{border: {stroke: 'black'}, title: {fontSize: 20}}}
-            data={[
-              {name: 'Systolic', symbol: {fill: '#c43a31'}},
-              {name: 'Diastolic', symbol: {fill: 'darkblue'}},
-            ]}
-          />
-          <VictoryAxis
-            dependentAxis
-            domain={[60, 150]}
-            offsetX={50}
-            orientation="left"
-            standalone={false}
-          />
-          <VictoryAxis
-            crossAxis
-            //width={400}
-            height={400}
-            theme={VictoryTheme.material}
-            //offsetY={200}
-            standalone={false}
-          />
-          {/* <VictoryAxis
-            dependentAxis = {true}
-            domain={{ x: [0, 100], y: [60, 140] }}
-            orientation="right"
-            standalone={false}
-            style={styles.axisOne}
-          /> */}
+          scale={{ x: 'time', y: 'linear' }}>
           <VictoryCandlestick
-            style={{
-              data: {stroke: '#c43a31', fill: '#c43a31', strokeWidth: 2},
-              parent: {border: '1px solid #ccc'},
-            }}
-            data={sysData}
-            open={(d) => (d.high + d.low + 0.5) / 2}
-            close={(d) => (d.high + d.low - 0.5) / 2}
+            data={bsData}
+            open={(d) => (d.high + d.low + 0.25) / 2}
+            close={(d) => (d.high + d.low - 0.25) / 2}
             high={(d) => d.high}
             low={(d) => d.low}
-          />
-          <VictoryCandlestick
             style={{
-              data: {stroke: 'darkblue', fill: 'darkblue', strokeWidth: 2},
-              parent: {border: '1px solid #ccc'},
+              data: {
+                stroke: 'darkblue',
+                fill: 'darkblue',
+                strokeWidth: 2,
+              },
             }}
-            data={diaData}
-            open={(d) => (d.high + d.low + 0.5) / 2}
-            close={(d) => (d.high + d.low - 0.5) / 2}
-            high={(d) => d.high}
-            low={(d) => d.low}
           />
         </VictoryChart>
             </View>

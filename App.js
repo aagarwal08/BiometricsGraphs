@@ -22,14 +22,18 @@ import {
 } from 'victory-native';
 import Weight from './weight';
 import BloodPressure from './bloodPressure';
+import BloodSugar from './bloodSugar';
 
 export default class login extends Component {
   constructor() {
     super();
     this.state = {
       selectedIndex: 0,
+      x: 5,
     };
     this.updateIndex = this.updateIndex.bind(this);
+    console.log("INDEX", this.state.selectedIndex);
+    console.log("X", this.state.x);
   }
 
   updateIndex(selectedIndex) {
@@ -38,11 +42,10 @@ export default class login extends Component {
   }
 
   componentDidMount() {
-    const buttons = ['Hello', 'World', 'Buttons'];
+    this.setState.selectedIndex = 0;
   }
 
   render() {
-    
     const {selectedIndex} = this.state;
 
     function getTimeStamp(date, time) {
@@ -58,6 +61,29 @@ export default class login extends Component {
       return timeStamp.getTime();
     }
 
+    var diaButtons = [];
+
+    Object.entries(BioMetricArray).forEach((entry) => {
+      const [curBio, curBioData] = entry;
+      diaButtons.push(curBioData.biometric_type);
+    });
+
+    selectedTab = () => {
+      switch(diaButtons[this.state.selectedIndex]){
+          case 'Weight':            
+            return <Weight />;
+          case 'Blood Sugar':
+            return <BloodSugar />
+          case 'Blood Pressure':
+            return <BloodPressure />
+          default:
+            return <Text>Nothing to Display</Text>
+      }
+    }
+    var print = selectedTab();
+    
+
+    //****************************************************** */
     var weightData = [];
     var bsData = [];
     var sysData = [];
@@ -181,135 +207,26 @@ export default class login extends Component {
         prevDate = curDate;
       });
     });
-
-    var diaButtons = [];
-
-    Object.entries(BioMetricArray).forEach((entry) => {
-      const [curBio, curBioData] = entry;
-      diaButtons.push(curBioData.biometric_type);
-      //console.log("BUTTONS", diaButtons);
-    });
-
-    selectedTab = () => {
-      switch(diaButtons[this.state.selectedIndex]){
-          case 'Blood Pressure':
-              return <Weight/>
-          case 'Blood Sugar':
-              return <BloodPressure />
-          case 'Weight':
-              return <ComponentC />
-          default:
-              return /* empty div maybe */
-      }
-    }
-
-
+    //************************************************************* */
+    
     return (
       <View style={styles.container}>
-       
-
+        <View style={styles.buttons}>
         <ButtonGroup
           onPress={this.updateIndex}
           selectedIndex={selectedIndex}
           buttons={diaButtons}
-          containerStyle={{height: 40}}
+          containerStyle={{height: 40, width: 500}}
         />
-
-        <Text>Weight vs Date</Text>
-        <VictoryChart
-          theme={VictoryTheme.material}
-          scale={{x: 'time', y: 'linear'}}>
-          <VictoryCandlestick
-            data={weightData}
-            open={(d) => (d.high + d.low + 0.25) / 2}
-            close={(d) => (d.high + d.low - 0.25) / 2}
-            high={(d) => d.high}
-            low={(d) => d.low}
-            style={{
-              data: {
-                stroke: 'green',
-                fill: 'green',
-                strokeWidth: 2,
-              },
-            }}
-          />
-        </VictoryChart>
-
-        <Text>Blood Pressure vs Date</Text>
-        <VictoryChart
-          theme={VictoryTheme.material}
-          scale={{x: 'time'}}
-          style={(paddingLeft = 150)}
-          containerComponent={
-            <VictoryVoronoiContainer
-              labels={({datum}) =>
-                `${Math.round(datum.low, 2)}, ${Math.round(datum.high, 2)}`
-              }
-            />
-          }>
-          <VictoryZoomContainer allowZoom={true} zoomDomain={{x: [0, 100]}} />
-          <VictoryLegend
-            x={120}
-            y={40}
-            title="Legend"
-            centerTitle
-            orientation="horizontal"
-            gutter={20}
-            style={{border: {stroke: 'black'}, title: {fontSize: 20}}}
-            data={[
-              {name: 'Systolic', symbol: {fill: '#c43a31'}},
-              {name: 'Diastolic', symbol: {fill: 'darkblue'}},
-            ]}
-          />
-          <VictoryAxis
-            dependentAxis
-            domain={[60, 150]}
-            offsetX={50}
-            orientation="left"
-            standalone={false}
-          />
-          <VictoryAxis
-            crossAxis
-            //width={400}
-            height={400}
-            theme={VictoryTheme.material}
-            //offsetY={200}
-            standalone={false}
-          />
-          {/* <VictoryAxis
-            dependentAxis = {true}
-            domain={{ x: [0, 100], y: [60, 140] }}
-            orientation="right"
-            standalone={false}
-            style={styles.axisOne}
-          /> */}
-          <VictoryCandlestick
-            style={{
-              data: {stroke: '#c43a31', fill: '#c43a31', strokeWidth: 2},
-              parent: {border: '1px solid #ccc'},
-            }}
-            data={sysData}
-            open={(d) => (d.high + d.low + 0.5) / 2}
-            close={(d) => (d.high + d.low - 0.5) / 2}
-            high={(d) => d.high}
-            low={(d) => d.low}
-          />
-          <VictoryCandlestick
-            style={{
-              data: {stroke: 'darkblue', fill: 'darkblue', strokeWidth: 2},
-              parent: {border: '1px solid #ccc'},
-            }}
-            data={diaData}
-            open={(d) => (d.high + d.low + 0.5) / 2}
-            close={(d) => (d.high + d.low - 0.5) / 2}
-            high={(d) => d.high}
-            low={(d) => d.low}
-          />
-        </VictoryChart>
+        </View>
+        <View style={styles.graphs}>
+          {print}
+        </View>                
       </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -318,6 +235,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f5fcff',
   },
+  buttons: {
+    paddingTop: 20,
+    fontSize: 40,
+  },
+  graphs: {
+    paddingLeft: 50,
+    paddingRight: 20,
+    paddingBottom: 30,
+  }
 });
 
 const BioMetricArray = [
