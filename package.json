@@ -15,8 +15,8 @@
     "react-native-elements": "^2.0.4",
     "react-native-svg": "^12.1.0",
     "react-native-vector-icons": "^7.0.0",
-    "victory-chart": "^35.0.3",
-    "victory-native": "^35.0.0"
+    "victory-chart": "^36.6.8",
+    "victory-native": "^36.6.8"
   },
   "devDependencies": {
     "@babel/core": "7.10.4",
